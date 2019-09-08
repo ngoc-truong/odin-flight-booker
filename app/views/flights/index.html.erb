@@ -1,0 +1,53 @@
+
+<%= form_with(url: flights_path, method: "get", local: true) do |f| %>
+    <div>
+        <%= f.label(:from_code, "From:") %>
+        <%= f.select(:from_code, options_for_select(@airport_options), prompt: "Choose airport") %>
+    </div>
+
+    <div>
+        <%= f.label(:to_code, "To:") %>
+        <%= f.select(:to_code, options_for_select(@airport_options), prompt: "Choose airport") %>
+    </div>
+
+    <div>
+        <%= f.label(:date, "Date:") %>
+        <%= f.select(:date, options_from_collection_for_select(@flights, "date", :date_formatted), prompt: "Choose date") %>
+    </div>
+
+    <div>
+        <%= f.label(:num_tickets, "Numbers of passengers:") %>
+        <%= f.number_field(:num_tickets, in: 1.0..4.0, step: 1.0) %>
+    </div>
+
+    <%= f.submit("Search") %>
+<% end %>
+
+
+<div>
+    <h1>Flights</h1>
+
+    <% if @selected_flights.empty? %>
+        <p>We could not find any flights on this date</p>
+    <% else %>
+        <% @selected_flights.each do |flight| %>
+            <%= form_with(url: flights_path, method: "post", local: true) do |f| %>
+                <div>
+                    <p>From: <%= flight.from_airport.city %></p>
+                    <% f.hidden_field(:from_code, value: flight.from_airport.id) %>
+
+                    <p>To: <%= flight.to_airport.city %></p>
+                    <% f.hidden_field(:to_code, value: flight.to_airport.id) %>
+
+                    <p>Passengers: <%= @passengers %></p>
+                    <% f.hidden_field(:passengers, value: @passengers) %>
+
+                    <p>Date: <%= flight.date_formatted %></p>
+                    <% f.hidden_field(:date, value: flight.date) %>
+
+                    <%= f.submit("Book flight") %>
+                </div>  
+            <% end %>
+        <% end %>
+    <% end %>
+</div>
