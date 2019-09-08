@@ -23,3 +23,19 @@ In this app, a user is able to book flights from one airport to another. This pr
 - belongs_to :from_airport, class_name: "Airport"
 - belongs_to :to_airport, class_name: "Airport"
 
+- has_many :bookings
+- has_many :passengers, through: :bookings
+
+## Passenger model
+- name: string
+- email: string
+- has_many :bookings, through: :bookings_passengers
+- has_many :flights, through: :bookings
+
+## Booking model 
+- has_many :passengers, through: :bookings_passengers
+- belongs_to :flight
+
+## Bookings_Passengers model
+- belongs_to :passenger
+- belongs_to :booking
